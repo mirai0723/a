@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jogo Eu Te Amo</title>
+
+<style>
+body {
+    margin: 0;
+    background: black;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+}
+
+canvas {
+    display: block;
+}
+
+/* Botões */
+#controls {
+    position: fixed;
+    bottom: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+}
+
+button {
+    width: 80px;
+    height: 80px;
+    font-size: 30px;
+    border-radius: 50%;
+    border: none;
+    background: #444;
+    color: white;
+}
+
+button:active {
+    background: #888;
+}
+
+/* Tela final */
+#final {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: black;
+    color: pink;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-size: 40px;
+}
+
+#heart {
+    font-size: 80px;
+    color: red;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="game"></canvas>
+
+<div id="controls">
+    <button id="left">⬅️</button>
+    <button id="right">➡️</button>
+</div>
+
+<div id="final">
+    <div>Desculpa por tudo vida eu sei q vc n quer mais q eu falo desculpa mas dessa fez é serio eu vo tenta melhora e n pensa so em fazer graça e pensa em vc e como vc c sente com oq eu to fazendo</div>
+    <div id="heart">❤️</div>
+</div>
+
+<script>
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let player = {
+    x: 50,
+    y: canvas.height / 2,
+    size: 30,
+    speed: 8
+};
+
+let endX = canvas.width - 80;
+let gameOver = false;
+
+// Botões
+document.getElementById("left").addEventListener("touchstart", () => move(-1));
+document.getElementById("right").addEventListener("touchstart", () => move(1));
+
+document.getElementById("left").addEventListener("mousedown", () => move(-1));
+document.getElementById("right").addEventListener("mousedown", () => move(1));
+
+function move(dir) {
+    if (gameOver) return;
+    player.x += dir * player.speed;
+
+    if (player.x < 0) player.x = 0;
+    if (player.x > endX) endGame();
+}
+
+function draw() {
+    if (gameOver) return;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // chão
+    ctx.fillStyle = "#222";
+    ctx.fillRect(0, player.y + 40, canvas.width, 5);
+
+    // jogador
+    ctx.fillStyle = "white";
+    ctx.fillRect(player.x, player.y, player.size, player.size);
+
+    // objetivo
+    ctx.fillStyle = "pink";
+    ctx.fillRect(endX + 20, player.y, 10, player.size);
+
+    requestAnimationFrame(draw);
+}
+
+function endGame() {
+    gameOver = true;
+    document.getElementById("final").style.display = "flex";
+}
+
+draw();
+</script>
+
+</body>
+</html>
